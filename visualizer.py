@@ -2,6 +2,7 @@ import pandas as pd
 from matplotlib import pyplot as plt
 import seaborn as sns
 import os
+import plotly.graph_objects as go
 
 
 def draw_graph(file_path: str, x: str, y: str, file_format: str, title: str, save: bool) -> None:
@@ -31,8 +32,24 @@ def draw_graph(file_path: str, x: str, y: str, file_format: str, title: str, sav
         if save:
             os.makedirs("./plots", exist_ok=True)
             plt.savefig(f"./plots/{title}.png")
+    elif file_format == "html":
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(name="close",
+                         x=df["date"],
+                         y=df["close"],
+                         mode="lines"))
+        fig.update_layout(title_text="The Stock Price of AAPL",
+                          title_x=0.5)
+        fig.update_xaxes(title='date')
+        fig.update_yaxes(title='close')
+        fig.show()
+        if save:
+            fig.write_html(f"./plots/{title}.html")
+
 
 
 if __name__ == "__main__":
-    draw_graph(file_path="./AAPL.csv", x="date", y="close", file_format="png",
-               title="The Stock Price of AAPL", save=True)
+    company_name = "AAPL"
+    draw_graph(file_path=f"./{company_name}.csv", x="date", y="close",
+               file_format="png",
+               title=f"The Stock Price of {company_name}", save=True)
