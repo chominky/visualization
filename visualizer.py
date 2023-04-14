@@ -50,6 +50,6 @@ def draw_graph(file_path: str, x: str, y: str, file_format: str, title: str, sav
 
 if __name__ == "__main__":
     company_name = "AAPL"
-    draw_graph(file_path=f"./{company_name}.csv", x="date", y="close",
+    draw_graph(file_path=f"./data/{company_name}.csv", x="date", y="close",
                file_format="png",
                title=f"The Stock Price of {company_name}", save=True)
