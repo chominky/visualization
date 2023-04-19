@@ -6,6 +6,6 @@ Also, you can check the plot results with jupyter notebook.
 ## Results
 ### matplotlib + seaborn
 * single plot <br />
-![plot](./plots/The Stock Price of MSFT.png)
+![The Stock Price of MSFT](https://user-images.githubusercontent.com/102792431/232936827-20297136-a0d0-49cc-abe1-fb3f1917a615.png)
 * multiple plot <br />
-![plot](./plots/AAPL, MSFT.png)
+![AAPL, MSFT](https://user-images.githubusercontent.com/102792431/232936861-b1b9c26a-63fc-4937-9d73-e8cb867a597a.png)
