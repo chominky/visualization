@@ -45,6 +45,7 @@ def draw_single_graph(stock: str, x: str, y: str, file_format: str, title: str, 
         fig.update_yaxes(title='close')
         fig.show()
         if save:
+            os.makedirs("./plots", exist_ok=True)
             fig.write_html(f"./plots/{title}.html")
 
 def draw_multiple_graph(stock_list: List[str], x: str, y: str, file_format: str, save: bool) -> None:
@@ -57,8 +58,8 @@ def draw_multiple_graph(stock_list: List[str], x: str, y: str, file_format: str,
         format (str): file format. png, html. if html, draw with animation bar
         save (bool): whether save or not
     """
-    nrows = len(stock_list)
     if file_format == "png":
+        nrows = len(stock_list)
         fig, axs = plt.subplots(figsize=(14,int(nrows*5)), nrows=nrows)
         sns.set(style="ticks")
         sns.despine()
@@ -77,6 +78,34 @@ def draw_multiple_graph(stock_list: List[str], x: str, y: str, file_format: str,
         if save:
             os.makedirs("./plots", exist_ok=True)
             fig.savefig(f"./plots/{', '.join(stock_list)}.png")
+    elif file_format == "html":
+        start_visible = [True] + [False for _ in range(len(stock_list)-1)]
+        stock_df_list = [pd.read_csv(f"./data/{stock}.csv") for stock in stock_list]
+        trace_list = [go.Scatter(name=stock,x=df["date"],y=df["close"],mode="lines",visible=vis)
+                    for stock, df, vis in zip(stock_list, stock_df_list, start_visible)]
+        fig = go.Figure(data=trace_list)
+
+        steps = []
+        for stock in stock_list:
+            # Hide all traces
+            step = dict(
+                        method='update',
+                        args=[{'visible': [True if stock in data['name'] else False for data in fig.data]},
+                            {'title.text': f'The Stock Price of {stock}'}],
+                        label=stock
+                    )
+            # Add step to step list
+            steps.append(step)
+        sliders = [dict(steps=steps)]
+        fig.layout.sliders = sliders
+        fig.update_layout(title_text=f'The Stock Price of {stock_list[0]}',
+                        title_x=0.5)
+        fig.update_xaxes(title='date')
+        fig.update_yaxes(title='close')
+        fig.show()
+        if save:
+            os.makedirs("./plots", exist_ok=True)
+            fig.write_html(f"./plots/{', '.join(stock_list)}.html")
 
 if __name__ == "__main__":
     company_name = "AAPL"
